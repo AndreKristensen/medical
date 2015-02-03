@@ -3,22 +3,22 @@ package no.ask.medical.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 @Configuration
-@ImportResource(value = { "application.properties" })
+@PropertySource("classpath:application.properties")
 public class ApplicationConfiguration {
 
 	
-	@Value("mysql.driver")
+	@Value("${mysql.driver}")
 	private String driver;
-	@Value("mysql.url")
+	@Value("${mysql.url}")
 	private String url;
-	@Value("mysql.pw")
+	@Value("${mysql.pw}")
 	private String pw;
-	@Value("mysql.username")
+	@Value("${mysql.username}")
 	private String username;
 	
     @Bean
