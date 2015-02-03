@@ -12,7 +12,7 @@ public class ApplicationInitializer extends AbstractAnnotationConfigDispatcherSe
 
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class<?>[] { ApplicationConfiguration.class };
+        return new Class<?>[] { ApplicationConfiguration.class,SecurityConfiguration.class };
     }
 
     @Override
