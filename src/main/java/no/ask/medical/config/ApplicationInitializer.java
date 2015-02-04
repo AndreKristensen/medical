@@ -4,13 +4,15 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 
+import no.ask.medical.aop.XACMLPEPHandler;
+
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 public class ApplicationInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
 	@Override
 	protected Class<?>[] getRootConfigClasses() {
-		return new Class<?>[] { ApplicationConfiguration.class, SecurityConfiguration.class };
+		return new Class<?>[] { ApplicationConfiguration.class, SecurityConfiguration.class};
 	}
 
 	@Override
