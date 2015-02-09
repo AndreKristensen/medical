@@ -1,6 +1,5 @@
 package no.ask.medical.web;
 
-import no.ask.medical.aop.PEP;
 import no.ask.medical.service.MedicalService;
 
 import org.springframework.beans.factory.annotation.Autowired;

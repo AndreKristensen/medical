@@ -2,6 +2,7 @@ package no.ask.medical.config;
 
 import no.ask.medical.aop.XACMLPEPHandler;
 import no.ask.medical.service.MedicalService;
+//import no.ask.xacml.util.XACMLCommunication;
 import no.ask.xacml.util.XACMLCommunication;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -15,15 +16,17 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 @Configuration
-@PropertySource("classpath:application.properties")
 @ComponentScan(basePackages = {"no.ask.medical.aop","no.ask.medical.serivce"})
 @EnableAspectJAutoProxy
+@PropertySource(value="classpath:/application.properties")
 public class ApplicationConfiguration {
 
 	@Value("${mysql.driver}")
 	private String driver;
+	
 	@Value("${mysql.url}")
 	private String url;
+	
 	@Value("${mysql.pw}")
 	private String pw;
 	
@@ -32,18 +35,21 @@ public class ApplicationConfiguration {
 	
 	@Value("${xacml.hostName}")
 	private String hostName;
+	
 	@Value("${xacml.port}")
 	private String port;
+	
 	@Value("${xacml.username}")
 	private String username;
+	
 	@Value("${xacml.password}")
 	private String password;
+	
 	@Value("${xacml.trustStoreFileURL}")
 	private String trustStoreFileURL;
+	
 	@Value("${xacml.trustStorPassowd}")
 	private String trustStorPassowd;
-	
-	
 
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
@@ -65,7 +71,6 @@ public class ApplicationConfiguration {
 	public MedicalService medicalService(){
 		return new MedicalService();
 	}
-	
 	
 	@Bean
 	public XACMLCommunication xacml (){

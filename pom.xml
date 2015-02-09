@@ -16,61 +16,7 @@
 		<mysql.connector.version>5.1.30</mysql.connector.version>
 	</properties>
 
-	<build>
-		<finalName>medical</finalName>
-		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.1</version>
-				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>2.5</version>
-				<configuration>
-					<encoding>UTF-8</encoding>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<version>2.7</version>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>2.4</version>
-				<configuration>
-					<failOnMissingWebXml>false</failOnMissingWebXml>
-				</configuration>
-			</plugin>
-		</plugins>
-		<resources>
-			<resource>
-				<directory>src/main/resources/common</directory>
-				<includes>
-					<include>**</include>
-				</includes>
-				<excludes>
-					<exclude>version.txt</exclude>
-				</excludes>
-			</resource>
-			<resource>
-				<filtering>true</filtering>
-				<directory>src/main/resources/common</directory>
-				<includes>
-					<include>version.txt</include>
-				</includes>
-			</resource>
-			<resource>
-				<directory>src/main/resources/${env}</directory>
-			</resource>
-		</resources>
-	</build>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -82,6 +28,7 @@
 			<artifactId>xacml-util</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-web</artifactId>
@@ -197,4 +144,67 @@
 			<version>1.2</version>
 		</dependency>
 	</dependencies>
+	<build>
+		<finalName>medical</finalName>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.5</version>
+				<configuration>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>2.7</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat7-maven-plugin</artifactId>
+				<version>2.1</version>
+				<configuration>
+					<path>/medical</path>
+				</configuration>
+			</plugin>
+		</plugins>
+		<resources>
+			<resource>
+				<directory>src/main/resources/</directory>
+				<includes>
+					<include>**</include>
+				</includes>
+				<excludes>
+					<exclude>version.txt</exclude>
+				</excludes>
+			</resource>
+			<resource>
+				<filtering>true</filtering>
+				<directory>src/main/resources/common</directory>
+				<includes>
+					<include>version.txt</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources/${env}</directory>
+			</resource>
+		</resources>
+	</build>
 </project>
