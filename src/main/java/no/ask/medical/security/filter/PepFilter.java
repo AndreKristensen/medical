@@ -15,23 +15,27 @@ import javax.xml.stream.XMLStreamException;
 
 import no.ask.xacml.util.XACMLCommunication;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.FilterInvocation;
 import org.xacmlinfo.xacml.pep.agent.PEPAgentException;
 
-//import org.xacmlinfo.xacml.pep.agent.PEPAgentException;
 
 public class PepFilter implements Filter {
+
+	private static final Logger log = LoggerFactory.getLogger(PepFilter.class);
 
 	@Autowired
 	private XACMLCommunication xacml;
 	
-	@Autowired
-	private Environment env;
-
+	@Value("${xacml.env}")
+	private String environment;
+	
+	
 	@Override
 	public void destroy() {
 		// TODO Auto-generated method stub
@@ -41,17 +45,14 @@ public class PepFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		String requestUrl = new FilterInvocation(request, response, chain).getRequestUrl();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		String environment = env.getProperty("xacml.env");
-
 		List<String> decisonResults;
 		try {
 			decisonResults = xacml.getDecisonResults(auth.getName(), new ArrayList<String>(), environment, requestUrl);
 
 			if (!decisonResults.isEmpty() && decisonResults.get(0).equals(XACMLCommunication.RESULT_PERMIT)) {
-				// chain.doFilter(request, response);
+			
 			} else {
-				System.out.println(requestUrl);
-				System.out.println(decisonResults);
+				log.info(requestUrl + " " + decisonResults);
 				((HttpServletResponse) response).sendError(401, decisonResults.isEmpty() ? "empty" : decisonResults.get(0) + " For url " + requestUrl);
 			}
 		} catch (NullPointerException | PEPAgentException | XMLStreamException e) {

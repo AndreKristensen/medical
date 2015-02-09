@@ -17,12 +17,8 @@ public class MedicalService {
 	private PatientsRepository repo;
 
 	@PEP(action = PEPConstants.READ)
-	public String readAllPatients(String s, int i) {
-		Iterable<Patient> findAll = repo.findAll();
-		for (Patient patient : findAll) {
-			System.out.println(patient);
-		}
-		return s;
+	public Iterable<Patient> readAllPatients() {
+		return repo.findAll();
 	}
 	
 	@PEP(action = PEPConstants.READ)

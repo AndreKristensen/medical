@@ -13,18 +13,17 @@ import org.aspectj.lang.annotation.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 @Aspect
 public class XACMLPEPHandler {
 
-	 private static final Logger log =
-	 LoggerFactory.getLogger(XACMLPEPHandler.class);
+	private static final Logger log = LoggerFactory.getLogger(XACMLPEPHandler.class);
 
-	@Autowired
-	private Environment env;
+	@Value("${xacml.env}")
+	private String environment;
 
 	@Autowired
 	private XACMLCommunication xacml;
@@ -32,15 +31,17 @@ public class XACMLPEPHandler {
 	@Before("execution(* *(..)) && @annotation(pep)")
 	public void pep(JoinPoint jp, PEP pep) throws Throwable {
 		Object[] args = jp.getArgs();
+		log.info(jp.getSignature().toShortString());
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		String environment = env.getProperty("xacml.env");
 		ArrayList<String> actions = new ArrayList<String>();
 
 		actions.add(pep.action());
-		decsion(xacml.getDecisonResults(auth.getName(), actions, environment, args.length >= 1 ? "" + args[0] : null));
+		
+		List<String> decisonResults = xacml.getDecisonResults(auth.getName(), actions, environment, args.length >= 1 ? "" + args[0] : jp.getSignature().toShortString());
+		log.info(auth.getName() + " " + actions + " " + environment + " " + decisonResults.toString());
+		decsion(decisonResults);
 
-		log.info(auth.getName() + " " + actions + " " + environment);
-
+		
 	}
 
 	private void decsion(List<String> decisonResults) {
