@@ -1,7 +1,7 @@
 /**
  * 
  */
-package no.ask.medical.annotations;
+package no.ask.medical.security.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -16,5 +16,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface PEP {
 
-	 String [] actions();
+	 String action();
 }

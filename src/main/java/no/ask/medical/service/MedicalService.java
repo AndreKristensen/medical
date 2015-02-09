@@ -1,20 +1,50 @@
 package no.ask.medical.service;
 
-import no.ask.medical.annotations.PEP;
+import javax.transaction.Transactional;
 
+import no.ask.medical.domain.Patient;
+import no.ask.medical.domain.repository.PatientsRepository;
+import no.ask.medical.security.annotations.PEP;
+import no.ask.medical.security.annotations.PEPConstants;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MedicalService {
-	
-	@PEP(actions = {"read"})
-	public void test(String s, int i) {
-		System.out.println("test");
-		
+
+	@Autowired
+	private PatientsRepository repo;
+
+	@PEP(action = PEPConstants.READ)
+	public String readAllPatients(String s, int i) {
+		Iterable<Patient> findAll = repo.findAll();
+		for (Patient patient : findAll) {
+			System.out.println(patient);
+		}
+		return s;
 	}
 	
-	@PEP(actions = {"read","delete"})
-	public String test2(String s, int i) {
-		return s;
+	@PEP(action = PEPConstants.READ)
+	public Patient readPatient(Long id) {
+		return repo.findOne(id);
+	}
+	
+	@Transactional
+	@PEP(action = PEPConstants.CREATE)
+	public void addPatient(String firstname, String lastname) {
+		repo.save(new Patient(firstname, lastname));
+	}
+
+	@Transactional
+	@PEP(action = PEPConstants.UPDATE)
+	public void updatePatient(Long id, String firstname, String lastname) {
+		repo.save(new Patient(id, firstname, lastname));
+	}
+	
+	@Transactional
+	@PEP(action = PEPConstants.DELETE)
+	public void deletePatient(Long id) {
+		repo.delete(id);
 	}
 }

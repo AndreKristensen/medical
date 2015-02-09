@@ -14,13 +14,11 @@ public class MedicalController {
 
 	@RequestMapping("/")
 	public String getIndex() {
-		
-//		service.test("Javel", 205);
 		try{
 			
-		System.out.println(service.test2("jasd", 2));
+		System.out.println(service.readAllPatients("jasd", 2));
 		}catch (Exception e){
-			System.out.println("yo");
+			
 		}
 		return "index";
 	}
