@@ -32,20 +32,18 @@ public class XACMLPEPHandler {
 	@Before("execution(* *(..)) && @annotation(pep)")
 	public void pep(JoinPoint jp, PEP pep) throws Throwable {
 		Object[] args = jp.getArgs();
-		System.out.println(jp.getSignature().getDeclaringTypeName().toString());
 		CodeSignature signature = (CodeSignature) jp.getSignature();
-		System.out.println(signature.getParameterNames());
 		String[] parameterNames = signature.getParameterNames();
 
-		log.info(jp.getSignature().toShortString());
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		ArrayList<String> actions = new ArrayList<String>();
 		List<String> decisonResults = new ArrayList<String>();
 
 		actions.add(pep.action());
-		decisonResults = xacml.getDecisonResults(auth.getName(), actions, environment, (parameterNames.length > 0 && parameterNames[0].contains("id")) ? args[0] + "" : jp.getSignature().toShortString());
+		String resource = (parameterNames.length > 0 && parameterNames[0].contains("id")) ? args[0] + "" : jp.getSignature().toShortString();
+		decisonResults = xacml.getDecisionResults(auth.getName(), actions, environment, resource);
 
-		log.info(auth.getName() + " " + actions + " " + environment + " " + decisonResults.toString());
+		log.info(auth.getName() + " " + actions + " " + environment + " " + resource + " " +decisonResults.toString());
 		decsion(decisonResults);
 
 	}

@@ -23,9 +23,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
 		auth.jdbcAuthentication()
-		.dataSource(dataSource).usersByUsernameQuery("select username,password, enabled from users where username=?")
-		.authoritiesByUsernameQuery("select username, role from user_roles where username=?")
-		;
+		.dataSource(dataSource)
+			.usersByUsernameQuery("select username, password, enabled from users where username = ?")
+			.authoritiesByUsernameQuery("select username, role from user_roles where username = ?");
+		
 	}
 
 	@Override
@@ -36,7 +37,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 			.anyRequest()
 			.authenticated()
 			.and()
-				.httpBasic().and().addFilterBefore(pepFilter(), FilterSecurityInterceptor.class)
+				.httpBasic()
+				.and()
+					.addFilterBefore(pepFilter(), FilterSecurityInterceptor.class)
 				.logout().deleteCookies("jsessionid");
 
 	}

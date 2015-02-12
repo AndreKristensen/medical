@@ -36,8 +36,6 @@ public class ApplicationConfiguration {
 
 	@Value("${xacml.trustStorPassowd}")
 	private String trustStorPassowd;
-
-	
 	
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {

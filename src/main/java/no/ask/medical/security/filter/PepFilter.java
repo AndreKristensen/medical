@@ -47,7 +47,7 @@ public class PepFilter implements Filter {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		List<String> decisonResults;
 		try {
-			decisonResults = xacml.getDecisonResults(auth.getName(), new ArrayList<String>(), environment, requestUrl);
+			decisonResults = xacml.getDecisionResults(auth.getName(), new ArrayList<String>(), environment, requestUrl);
 
 			if (!decisonResults.isEmpty() && decisonResults.get(0).equals(XACMLCommunication.RESULT_PERMIT)) {
 			

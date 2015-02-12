@@ -17,7 +17,7 @@ public class PatientController {
 	@Autowired
 	private PatientService service;
 
-	@RequestMapping("/")
+	@RequestMapping({"/patients","/"})
 	public String getIndex(Model model) {
 		try {
 
@@ -66,7 +66,7 @@ public class PatientController {
 		return "index";
 	}
 
-	@RequestMapping("/createPatient")
+	@RequestMapping("/patient/create")
 	public String createPatient() {
 		service.createPatient("Test", "test");
 		return "index";
