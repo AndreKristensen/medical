@@ -10,6 +10,7 @@ import no.ask.xacml.util.XACMLCommunication;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.reflect.CodeSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,17 +32,22 @@ public class XACMLPEPHandler {
 	@Before("execution(* *(..)) && @annotation(pep)")
 	public void pep(JoinPoint jp, PEP pep) throws Throwable {
 		Object[] args = jp.getArgs();
+		System.out.println(jp.getSignature().getDeclaringTypeName().toString());
+		CodeSignature signature = (CodeSignature) jp.getSignature();
+		System.out.println(signature.getParameterNames());
+		String[] parameterNames = signature.getParameterNames();
+
 		log.info(jp.getSignature().toShortString());
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		ArrayList<String> actions = new ArrayList<String>();
+		List<String> decisonResults = new ArrayList<String>();
 
 		actions.add(pep.action());
-		
-		List<String> decisonResults = xacml.getDecisonResults(auth.getName(), actions, environment, args.length >= 1 ? "" + args[0] : jp.getSignature().toShortString());
+		decisonResults = xacml.getDecisonResults(auth.getName(), actions, environment, (parameterNames.length > 0 && parameterNames[0].contains("id")) ? args[0] + "" : jp.getSignature().toShortString());
+
 		log.info(auth.getName() + " " + actions + " " + environment + " " + decisonResults.toString());
 		decsion(decisonResults);
 
-		
 	}
 
 	private void decsion(List<String> decisonResults) {

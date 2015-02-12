@@ -1,9 +1,14 @@
 package no.ask.medical.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 
 @Entity
 public class Patient {
@@ -16,6 +21,9 @@ public class Patient {
 
 	private String lastname;
 	
+	@ManyToMany(fetch=FetchType.EAGER)
+	private List<Department> departments = new ArrayList<Department>();
+	
 	public Patient() {
 	    // TODO Auto-generated constructor stub
     }
@@ -25,6 +33,7 @@ public class Patient {
 		this.lastname = lastname;
 	}
 
+	
 	public Patient(Long id, String firstname, String lastname) {
 	    this.id = id;
 	    this.firstname = firstname;
@@ -55,6 +64,8 @@ public class Patient {
     public String toString() {
 	    return "Patient [id=" + id + ", firstname=" + firstname + ", lastname=" + lastname + "]";
     }
-
 	
+	public List<Department> getDepartments() {
+	    return departments;
+    }
 }

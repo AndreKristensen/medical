@@ -3,7 +3,7 @@ package no.ask.medical.web;
 import java.util.ArrayList;
 
 import no.ask.medical.domain.Patient;
-import no.ask.medical.service.MedicalService;
+import no.ask.medical.service.PatientService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-public class MedicalController {
+public class PatientController {
 
 	@Autowired
-	private MedicalService service;
+	private PatientService service;
 
 	@RequestMapping("/")
 	public String getIndex(Model model) {
@@ -45,10 +45,9 @@ public class MedicalController {
 		}
 		return "index";
 	}
-	
 
 	@RequestMapping("/patient/id/{id}/{firstname}/{lastname}")
-	public String getUpdatePateient(Model model, @PathVariable Long id,@PathVariable String firstname,@PathVariable String lastname) {
+	public String getUpdatePateient(Model model, @PathVariable Long id, @PathVariable String firstname, @PathVariable String lastname) {
 		try {
 			service.updatePatient(id, firstname, lastname);
 		} catch (Exception e) {
@@ -56,8 +55,6 @@ public class MedicalController {
 		}
 		return "index";
 	}
-	
-	
 
 	@RequestMapping("/patient/delete/id/{id}")
 	public String getDeletePateient(Model model, @PathVariable Long id) {
@@ -68,21 +65,10 @@ public class MedicalController {
 		}
 		return "index";
 	}
-	
 
-	@RequestMapping("/addPatient")
-	public String getAddPatient() {
-
-		// try{
-		//
-		// service.addPatient("Andre", "Kristensen");
-		// service.addPatient("Donal", "Duck");
-		// service.addPatient("Mikke", "Mus");
-		// service.addPatient("Daniel", "N");
-		// service.addPatient("Minni", "Mus");
-		// }catch (Exception e){
-		// e.printStackTrace();
-		// }
+	@RequestMapping("/createPatient")
+	public String createPatient() {
+		service.createPatient("Test", "test");
 		return "index";
 	}
 

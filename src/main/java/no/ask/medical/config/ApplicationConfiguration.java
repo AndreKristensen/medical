@@ -1,7 +1,7 @@
 package no.ask.medical.config;
 
 import no.ask.medical.security.aop.XACMLPEPHandler;
-import no.ask.medical.service.MedicalService;
+import no.ask.medical.service.PatientService;
 //import no.ask.xacml.util.XACMLCommunication;
 import no.ask.xacml.util.XACMLCommunication;
 
@@ -47,8 +47,8 @@ public class ApplicationConfiguration {
 	}
 
 	@Bean
-	public MedicalService medicalService() {
-		return new MedicalService();
+	public PatientService medicalService() {
+		return new PatientService();
 	}
 
 	@Bean

@@ -1,6 +1,6 @@
 package no.ask.medical.security.annotations;
 
-public class PEPConstants {
+public class PEPActions {
 
 	
 	public final static String CREATE ="create";
