@@ -13,6 +13,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.stream.XMLStreamException;
 
+import no.ask.medical.exception.PEPException;
 import no.ask.xacml.util.XACMLCommunication;
 
 import org.slf4j.Logger;
@@ -43,15 +44,18 @@ public class PepFilter implements Filter {
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-		String requestUrl = new FilterInvocation(request, response, chain).getRequestUrl();
+		FilterInvocation filterInvocation = new FilterInvocation(request, response, chain);
+		String requestUrl = filterInvocation.getRequestUrl();
+		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		List<String> decisonResults;
 		try {
-			decisonResults = xacml.getDecisionResults(auth.getName(), new ArrayList<String>(), environment, requestUrl);
+			ArrayList<String> privileges = new ArrayList<String>();
+            privileges.add(filterInvocation.getRequest().getMethod());
+            
+			decisonResults = xacml.getDecisionResults(auth.getName(), privileges, environment, requestUrl);
 
-			if (!decisonResults.isEmpty() && decisonResults.get(0).equals(XACMLCommunication.RESULT_PERMIT)) {
-			
-			} else {
+			if (!decisonResults.isEmpty() && !decisonResults.get(0).equals(XACMLCommunication.RESULT_PERMIT)) {
 				log.info(requestUrl + " " + decisonResults);
 				((HttpServletResponse) response).sendError(401, decisonResults.isEmpty() ? "empty" : decisonResults.get(0) + " For url " + requestUrl);
 			}
