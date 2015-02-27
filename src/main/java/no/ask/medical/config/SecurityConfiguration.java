@@ -2,7 +2,7 @@ package no.ask.medical.config;
 
 import javax.sql.DataSource;
 
-import no.ask.medical.security.filter.PepFilter;
+import no.ask.medical.security.filter.PEPFilter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -45,7 +45,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	}
 	
 	@Bean
-	public PepFilter pepFilter (){
-		return new PepFilter();
+	public PEPFilter pepFilter (){
+		return new PEPFilter();
 	}
 }

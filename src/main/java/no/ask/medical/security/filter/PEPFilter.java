@@ -26,9 +26,9 @@ import org.springframework.security.web.FilterInvocation;
 import org.xacmlinfo.xacml.pep.agent.PEPAgentException;
 
 
-public class PepFilter implements Filter {
+public class PEPFilter implements Filter {
 
-	private static final Logger log = LoggerFactory.getLogger(PepFilter.class);
+	private static final Logger log = LoggerFactory.getLogger(PEPFilter.class);
 
 	@Autowired
 	private XACMLCommunication xacml;
