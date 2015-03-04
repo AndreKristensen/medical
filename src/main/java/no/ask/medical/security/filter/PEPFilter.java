@@ -50,14 +50,14 @@ public class PEPFilter implements Filter {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		List<String> decisonResults;
 		try {
-			ArrayList<String> privileges = new ArrayList<String>();
-            privileges.add(filterInvocation.getRequest().getMethod());
+			ArrayList<String> actions = new ArrayList<String>();
+            actions.add(filterInvocation.getRequest().getMethod());
             
-			decisonResults = xacml.getDecisionResults(auth.getName(), privileges, environment, requestUrl);
+			decisonResults = xacml.getDecisionResults(auth.getName(), actions, environment, requestUrl);
 
 			if (!decisonResults.isEmpty() && !decisonResults.get(0).equals(XACMLCommunication.RESULT_PERMIT)) {
 				log.info(requestUrl + " " + decisonResults);
-				((HttpServletResponse) response).sendError(401, decisonResults.isEmpty() ? "empty" : decisonResults.get(0) + " For url " + requestUrl);
+				((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, decisonResults.isEmpty() ? "empty" : decisonResults.get(0) + " For url " + requestUrl);
 			}
 		} catch (NullPointerException | PEPAgentException | XMLStreamException e) {
 			e.printStackTrace();
