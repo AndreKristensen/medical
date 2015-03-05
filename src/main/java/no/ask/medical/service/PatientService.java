@@ -38,7 +38,7 @@ public class PatientService {
 
 	@Transactional
 	@PEP(action = PEPActions.CREATE)
-	public void createPatientInLocation(String firstname, String lastname, Long locationId) {
+	public void createPatientInLocation(Long locationId, String firstname, String lastname) {
 		Patient entity = new Patient(firstname, lastname);
 		entity.getDepartments().add(depRepo.findOne(locationId));
 		repo.save(entity);
