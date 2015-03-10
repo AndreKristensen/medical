@@ -24,11 +24,11 @@
 			<version>1.7.2.RELEASE</version>
 		</dependency>
 
-<!-- 		<dependency> -->
-<!-- 			<groupId>javax.persistence</groupId> -->
-<!-- 			<artifactId>persistence-api</artifactId> -->
-<!-- 			<version>1.0.2</version> -->
-<!-- 		</dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>javax.persistence</groupId> -->
+		<!-- <artifactId>persistence-api</artifactId> -->
+		<!-- <version>1.0.2</version> -->
+		<!-- </dependency> -->
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-commons</artifactId>
@@ -52,6 +52,11 @@
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 
+		<dependency>
+			<groupId>no.ask</groupId>
+			<artifactId>xacml-pip-medical</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-web</artifactId>
@@ -79,6 +84,12 @@
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-commons</artifactId>
 			<version>1.9.2.RELEASE</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.wso2.balana</groupId>
+			<artifactId>org.wso2.balana</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 
 		<dependency>
