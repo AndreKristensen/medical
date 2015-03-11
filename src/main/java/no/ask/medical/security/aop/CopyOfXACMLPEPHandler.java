@@ -5,7 +5,6 @@ import java.util.List;
 
 import no.ask.medical.exception.PEPException;
 import no.ask.medical.security.annotations.PEP;
-import no.ask.medical.security.common.XACMLHelper;
 import no.ask.xacml.util.XACMLCommunication;
 
 import org.aspectj.lang.JoinPoint;
@@ -18,22 +17,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.wso2.balana.PDP;
 /**
  * 
  * @author Andre
  *
  */
 @Aspect
-public class XACMLPEPHandler {
+public class CopyOfXACMLPEPHandler {
 
-	private static final Logger log = LoggerFactory.getLogger(XACMLPEPHandler.class);
+	private static final Logger log = LoggerFactory.getLogger(CopyOfXACMLPEPHandler.class);
 
 	@Value("${xacml.env}")
 	private String environment;
-	
+
 	@Autowired
-	private PDP pdp;
+	private XACMLCommunication xacml;
 
 	/**
 	 * Method that intercepts all the methods with  the @PEP annotation before executing. 
@@ -56,12 +54,11 @@ public class XACMLPEPHandler {
 		ArrayList<String> actions = new ArrayList<String>();
 		List<String> decisonResults = new ArrayList<String>();
 		actions.add(pep.action());
-		
 		String resource = (parameterNames.length > 0 && parameterNames[0].contains("id")) ? args[0] + "" : jp.getSignature().toShortString();
-		String evaluate = pdp.evaluate(XACMLHelper.createXACMLRequest(auth.getName(), pep.action(), environment, resource).toString());
+		decisonResults = xacml.getDecisionResults(auth.getName(), actions, environment, resource);
 
 		log.info(auth.getName() + " " + actions + " " + environment + " " + resource + " " +decisonResults.toString());
-			if (!evaluate.equals(XACMLCommunication.RESULT_PERMIT)) {
+		if (!decisonResults.isEmpty() && !decisonResults.get(0).equals(XACMLCommunication.RESULT_PERMIT)) {
 			throw new PEPException("XACML respons is " + decisonResults.toString());
 		}
 	}

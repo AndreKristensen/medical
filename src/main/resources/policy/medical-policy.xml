@@ -1,0 +1,185 @@
+<Policy xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17"
+	xmlns:xacml="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17" PolicyId="Medical"
+	RuleCombiningAlgId="urn:oasis:names:tc:xacml:1.0:rule-combining-algorithm:first-applicable"
+	Version="1.0">
+	<Description>
+		The target of this policy is the odk.com environment.
+		Every request need
+		to have this environment included to get evaluated.
+		Rule start : capturing the target.
+		A user in the medical domain ..
+		continues with a rule that fits.
+	</Description>
+	<Target>
+		<AnyOf>
+			<AllOf>
+				<Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+					<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">medical</AttributeValue>
+					<AttributeDesignator
+						AttributeId="urn:oasis:names:tc:xacml:1.0:environment:environment-id"
+						Category="urn:oasis:names:tc:xacml:3.0:attribute-category:environment"
+						DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true"></AttributeDesignator>
+				</Match>
+			</AllOf>
+		</AnyOf>
+	</Target>
+
+	<Rule RuleId="view" Effect="Permit">
+		<Description>
+			Grants access to / or /patients url to anyone
+		</Description>
+		<Target>
+			<AnyOf>
+				<AllOf>
+					<Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-regexp-match">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">(/|/patients)
+						</AttributeValue>
+						<AttributeDesignator
+							AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id"
+							Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource"
+							DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true"></AttributeDesignator>
+					</Match>
+				</AllOf>
+			</AnyOf>
+		</Target>
+	</Rule>
+
+
+	<Rule RuleId="create_patient" Effect="Permit">
+		<Description>
+
+			a user who tires to create a patients need to be nurse and the action
+			need to be create
+		</Description>
+		<Target>
+			<AnyOf>
+				<AllOf>
+					<Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-regexp-match">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">PatientService.createPatient[\(.\)]*
+						</AttributeValue>
+						<AttributeDesignator
+							AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id"
+							Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource"
+							DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true"></AttributeDesignator>
+					</Match>
+				</AllOf>
+			</AnyOf>
+		</Target>
+		<Condition>
+			<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:any-of">
+					<Function
+						FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-regexp-match"></Function>
+					<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">nurse</AttributeValue>
+					<AttributeDesignator
+						Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject"
+						AttributeId="http://medical/id/role" DataType="http://www.w3.org/2001/XMLSchema#string"
+						MustBePresent="false"></AttributeDesignator>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:any-of">
+					<Function
+						FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-regexp-match"></Function>
+					<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">create</AttributeValue>
+					<AttributeDesignator
+						AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id"
+						Category="urn:oasis:names:tc:xacml:3.0:attribute-category:action"
+						DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="false" />
+				</Apply>
+			</Apply>
+		</Condition>
+	</Rule>
+
+	<Rule RuleId="read-with-out-id" Effect="Permit">
+		<Description>
+			a user who tries to read all the patients need to be an administrator
+			and the action need to be read
+		</Description>
+		<Target>
+			<AnyOf>
+				<AllOf>
+					<Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-regexp-match">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">PatientService.readAllPatients[\(.\)]*
+						</AttributeValue>
+						<AttributeDesignator
+							AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id"
+							Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource"
+							DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true"></AttributeDesignator>
+					</Match>
+				</AllOf>
+			</AnyOf>
+		</Target>
+		<Condition>
+			<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:any-of">
+					<Function
+						FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-regexp-match"></Function>
+					<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">ROLE_ADMIN</AttributeValue>
+					<AttributeDesignator
+						Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject"
+						AttributeId="http://medical/id/role" DataType="http://www.w3.org/2001/XMLSchema#string"
+						MustBePresent="false"></AttributeDesignator>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:any-of">
+					<Function
+						FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-regexp-match"></Function>
+					<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">read</AttributeValue>
+					<AttributeDesignator
+						AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id"
+						Category="urn:oasis:names:tc:xacml:3.0:attribute-category:action"
+						DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="false" />
+				</Apply>
+			</Apply>
+		</Condition>
+	</Rule>
+
+
+	<Rule RuleId="read-with-same-location" Effect="Permit">
+
+		A user who is trying to read a patient needs to be a nurse and have
+		access to the treatment department.
+		<Target>
+			<AnyOf>
+				<AllOf>
+					<Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-regexp-match">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">read</AttributeValue>
+						<AttributeDesignator
+							AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id"
+							Category="urn:oasis:names:tc:xacml:3.0:attribute-category:action"
+							DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true"></AttributeDesignator>
+					</Match>
+				</AllOf>
+			</AnyOf>
+		</Target>
+		<Condition>
+			<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:any-of">
+					<Function
+						FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-regexp-match"></Function>
+					<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">nurse</AttributeValue>
+					<AttributeDesignator
+						Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject"
+						AttributeId="http://medical/id/role" DataType="http://www.w3.org/2001/XMLSchema#string"
+						MustBePresent="false"></AttributeDesignator>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:any-of">
+					<Function
+						FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-regexp-match"></Function>
+					<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">(burn_center|icu|pharmacy|emergency|operating-room)
+					</AttributeValue>
+					<AttributeDesignator
+						Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject"
+						AttributeId="http://medical/id/department-patient" DataType="http://www.w3.org/2001/XMLSchema#string"
+						MustBePresent="false"></AttributeDesignator>
+				</Apply>
+			</Apply>
+		</Condition>
+	</Rule>
+
+
+	<Rule RuleId="last-rule" Effect="Deny">
+		<Description>
+			Deny if not any rule have given permit.
+		</Description>
+
+	</Rule>
+</Policy>        
