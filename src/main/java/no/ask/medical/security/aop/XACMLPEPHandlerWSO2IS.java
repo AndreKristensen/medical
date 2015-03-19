@@ -23,9 +23,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
  *
  */
 @Aspect
-public class CopyOfXACMLPEPHandler {
+public class XACMLPEPHandlerWSO2IS {
 
-	private static final Logger log = LoggerFactory.getLogger(CopyOfXACMLPEPHandler.class);
+	private static final Logger log = LoggerFactory.getLogger(XACMLPEPHandlerWSO2IS.class);
 
 	@Value("${xacml.env}")
 	private String environment;

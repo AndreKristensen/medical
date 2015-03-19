@@ -1,9 +1,6 @@
 package no.ask.medical.config;
 
-import no.ask.medical.security.aop.XACMLPEPHandler;
 import no.ask.medical.service.PatientService;
-//import no.ask.xacml.util.XACMLCommunication;
-import no.ask.xacml.util.XACMLCommunication;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -12,30 +9,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+//import no.ask.xacml.util.XACMLCommunication;
 
 @Configuration
-@ComponentScan(basePackages = { "no.ask.medical.secuirty.aop", "no.ask.medical.serivce" })
-@EnableAspectJAutoProxy
-@PropertySource(value = "classpath:/application.properties")
+@ComponentScan(basePackages = { "no.ask.medical.serivce" })
 public class ApplicationConfiguration {
-
-	@Value("${xacml.hostName}")
-	private String hostName;
-
-	@Value("${xacml.port}")
-	private String port;
-
-	@Value("${xacml.username}")
-	private String username;
-
-	@Value("${xacml.password}")
-	private String password;
-
-	@Value("${xacml.trustStoreFileURL}")
-	private String trustStoreFileURL;
-
-	@Value("${xacml.trustStorPassowd}")
-	private String trustStorPassowd;
 
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
@@ -48,13 +26,4 @@ public class ApplicationConfiguration {
 		return new PatientService();
 	}
 
-	@Bean
-	public XACMLCommunication xacml() {
-		return new XACMLCommunication(hostName, port, username, password, trustStoreFileURL, trustStorPassowd);
-	}
-
-	@Bean
-	public XACMLPEPHandler handler() {
-		return new XACMLPEPHandler();
-	}
 }

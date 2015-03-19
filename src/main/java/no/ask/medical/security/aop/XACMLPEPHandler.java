@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.wso2.balana.PDP;
+
 /**
  * 
  * @author Andre
@@ -31,17 +32,19 @@ public class XACMLPEPHandler {
 
 	@Value("${xacml.env}")
 	private String environment;
-	
+
 	@Autowired
 	private PDP pdp;
 
 	/**
-	 * Method that intercepts all the methods with  the @PEP annotation before executing. 
-	 * The method checks if the methods arguments contains an resources id and uses it in the
-	 * XACML request. It checks if the user have the right to execute the method. A XACML 
-	 * request is sent to the PDP and if the response is denied the 
-	 * method throws an {@link PEPException}, the method terminates and the user is not allowed 
-	 * to get the resources. If the XACML request gets permit the method is continued.
+	 * Method that intercepts all the methods with the @PEP annotation before
+	 * executing. The method checks if the methods arguments contains an
+	 * resources id and uses it in the XACML request. It checks if the user have
+	 * the right to execute the method. A XACML request is sent to the PDP and
+	 * if the response is denied the method throws an {@link PEPException}, the
+	 * method terminates and the user is not allowed to get the resources. If
+	 * the XACML request gets permit the method is continued.
+	 * 
 	 * @param jp
 	 * @param pep
 	 * @throws Throwable
@@ -56,12 +59,12 @@ public class XACMLPEPHandler {
 		ArrayList<String> actions = new ArrayList<String>();
 		List<String> decisonResults = new ArrayList<String>();
 		actions.add(pep.action());
-		
+
 		String resource = (parameterNames.length > 0 && parameterNames[0].contains("id")) ? args[0] + "" : jp.getSignature().toShortString();
 		String evaluate = pdp.evaluate(XACMLHelper.createXACMLRequest(auth.getName(), pep.action(), environment, resource).toString());
 
-		log.info(auth.getName() + " " + actions + " " + environment + " " + resource + " " +decisonResults.toString());
-			if (!evaluate.equals(XACMLCommunication.RESULT_PERMIT)) {
+		log.info(auth.getName() + " " + actions + " " + environment + " " + resource + " " + decisonResults.toString());
+		if (!evaluate.equals(XACMLCommunication.RESULT_PERMIT)) {
 			throw new PEPException("XACML respons is " + decisonResults.toString());
 		}
 	}
