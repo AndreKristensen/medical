@@ -13,7 +13,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.stream.XMLStreamException;
 
-import no.ask.medical.exception.PEPException;
 import no.ask.xacml.util.XACMLCommunication;
 
 import org.slf4j.Logger;

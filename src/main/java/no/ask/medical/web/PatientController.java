@@ -33,12 +33,12 @@ public class PatientController {
 	@RequestMapping({ "/patients", "/" })
 	public String getIndex(Model model) {
 
-		ArrayList<Patient> patients = new ArrayList<Patient>();
-		Iterable<Patient> readAllPatients = service.readAllPatients();
-		for (Patient patient : readAllPatients) {
-			patients.add(patient);
-		}
-		model.addAttribute("patients", patients);
+//		ArrayList<Patient> patients = new ArrayList<Patient>();
+//		Iterable<Patient> readAllPatients = service.readAllPatients();
+//		for (Patient patient : readAllPatients) {
+//			patients.add(patient);
+//		}
+//		model.addAttribute("patients", patients);
 
 		return "index";
 	}

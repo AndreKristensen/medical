@@ -11,10 +11,8 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.stream.XMLStreamException;
 
 import no.ask.medical.security.common.XACMLHelper;
-import no.ask.xacml.util.XACMLCommunication;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,75 +21,71 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.FilterInvocation;
-import org.wso2.balana.Balana;
 import org.wso2.balana.PDP;
 import org.wso2.balana.ParsingException;
 import org.wso2.balana.ctx.AbstractResult;
 import org.wso2.balana.ctx.ResponseCtx;
-import org.xacmlinfo.xacml.pep.agent.PEPAgentException;
 
 public class PEPFilter implements Filter {
 
-	private static final Logger log = LoggerFactory.getLogger(PEPFilter.class);
+    private static final Logger log = LoggerFactory.getLogger(PEPFilter.class);
 
-	// @Autowired
-	// private XACMLCommunication xacml;
+    @Autowired
+    private PDP pdp;
 
-	@Autowired
-	private PDP pdp;
+    @Value("${xacml.env}")
+    private String environment;
 
-	@Value("${xacml.env}")
-	private String environment;
+    @Override
+    public void destroy() {
+        // TODO Auto-generated method stub
+    }
 
-	@Override
-	public void destroy() {
-		// TODO Auto-generated method stub
-	}
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        FilterInvocation filterInvocation = new FilterInvocation(request, response, chain);
+        String requestUrl = filterInvocation.getRequestUrl();
 
-	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-		FilterInvocation filterInvocation = new FilterInvocation(request, response, chain);
-		String requestUrl = filterInvocation.getRequestUrl();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        List<String> decisonResults;
+        // try {
+        ArrayList<String> actions = new ArrayList<String>();
+        actions.add(filterInvocation.getRequest().getMethod());
 
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		List<String> decisonResults;
-		// try {
-		ArrayList<String> actions = new ArrayList<String>();
-		actions.add(filterInvocation.getRequest().getMethod());
+        System.out.println(XACMLHelper.createXACMLRequest(auth.getName(), actions.get(0), environment, requestUrl));
+        String evaluate = pdp.evaluate(XACMLHelper.createXACMLRequest(auth.getName(), actions.get(0), environment, requestUrl));
 
-System.out.println(XACMLHelper.createXACMLRequest(auth.getName(), actions.get(0), environment, requestUrl));
-		String evaluate = pdp.evaluate(XACMLHelper.createXACMLRequest(auth.getName(), actions.get(0), environment, requestUrl));
-
-		
-		  ResponseCtx responseCtx;
+        ResponseCtx responseCtx;
         try {
-	        responseCtx = ResponseCtx.getInstance(XACMLHelper.getXacmlResponse(evaluate));
-          AbstractResult result  = responseCtx.getResults().iterator().next();
-          if(AbstractResult.DECISION_PERMIT != result.getDecision()){
-        		  if("anonymousUser".equals((auth.getName()))){
-        	 chain.doFilter(request, response);
-         }else{
-        	 log.info(requestUrl + " " + evaluate);
- 			((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, result.getDecision() + " For url " + requestUrl);
-     
-         }
-          }else{
-        	  chain.doFilter(request, response);
-          }
+            responseCtx = ResponseCtx.getInstance(XACMLHelper.getXacmlResponse(evaluate));
+            AbstractResult result = responseCtx.getResults().iterator().next();
+            if (AbstractResult.DECISION_PERMIT != result.getDecision()) {
+                if ("anonymousUser".equals((auth.getName()))) {
+                    chain.doFilter(request, response);
+                } else {
+                    log.info(requestUrl + " " + evaluate);
+                    ((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, result.getDecision() + " For url " + requestUrl);
+
+                }
+            } else {
+                chain.doFilter(request, response);
+            }
         } catch (ParsingException e) {
-        	e.printStackTrace();
+            e.printStackTrace();
         }
-//		if (!evaluate.equals(XACMLCommunication.RESULT_PERMIT)) {
-//			log.info(requestUrl + " " + evaluate);
-//			((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, evaluate + " For url " + requestUrl);
-//		}
+        // if (!evaluate.equals(XACMLCommunication.RESULT_PERMIT)) {
+        // log.info(requestUrl + " " + evaluate);
+        // ((HttpServletResponse)
+        // response).sendError(HttpServletResponse.SC_UNAUTHORIZED, evaluate +
+        // " For url " + requestUrl);
+        // }
 
-//		chain.doFilter(request, response);
-	}
+        // chain.doFilter(request, response);
+    }
 
-	@Override
-	public void init(FilterConfig arg0) throws ServletException {
+    @Override
+    public void init(FilterConfig arg0) throws ServletException {
 
-	}
+    }
 
 }
